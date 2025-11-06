@@ -1,5 +1,8 @@
 import json
 import os
+import random
+import re
+
 
 HOW_MANY_BOOK = 3
 LINE = 128
@@ -85,7 +88,20 @@ def load(filepath, *key_books):
         save(filepath, code_book)
         return pages, code_book
 
+def encrypt(code_book, message):
+    cipher_text = []
+    for char in message:
+        index = random.randint(0, len(code_book[char]) - 1)
+        cipher_text.append(code_book[char].pop(index))
+    return '-'.join(cipher_text)
 
+def decrypt(rev_code_book, ciphertext):
+    plaintext = []
+    for cc in re.findall(r'\d+-\d+-\d+', ciphertext):
+        page, line, char = cc.split('-')
+        plaintext.append(
+            rev_code_book[page][line][int(char)])
+    return ''.join(plaintext)
 
 p, cb = load('./code_books/book1.json', 'books/Ozymandias.txt')
 print(len(p) , len(cb))

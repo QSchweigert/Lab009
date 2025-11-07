@@ -2,7 +2,7 @@ import json
 import os
 import random
 import re
-
+import sys
 
 HOW_MANY_BOOK = 3
 LINE = 128
@@ -103,8 +103,44 @@ def decrypt(rev_code_book, ciphertext):
             rev_code_book[page][line][int(char)])
     return ''.join(plaintext)
 
-p, cb = load('./code_books/book1.json', 'books/Ozymandias.txt')
-print(len(p) , len(cb))
+
+def main_menu():
+    print("""1). Encrypt
+2). Decrypt
+3). Quit
+""");
+    return int(input("Make a selection [1,2,3]: "))
+
+
+def main():
+    key_books = ('books/Monster in the lake.txt', 'books/Ozymandias.txt')
+    code_book_path = 'code_books/dmdwp.txt'
+    rev_code_book_path = 'code_books/dmdwp_r.txt'
+    while True:
+        try:
+            choice = main_menu()
+            match (choice):
+                case 1:
+                    code_book = load(code_book_path, *key_books)
+                    message = input("Please enter your secret message: ")
+                    print(encrypt(code_book, message))
+                    continue
+                case 2:
+                    rev_code_book = load(rev_code_book_path, *key_books)
+                    message = input("Please enter your cipher text: ")
+                    print(decrypt(rev_code_book, message))
+                    continue
+                case 3:
+                    sys.exit(0)
+        except ValueError as ve:
+            print("Improper selection.")
+
+
+if __name__ == '__main__':
+    main()
+
+#p, cb = load('./code_books/book1.json', 'books/Ozymandias.txt')
+#print(len(p) , len(cb))
 
 #process_books('./books/Ozymandias.txt')
 #print(json.dumps(pages, indent = 4))
